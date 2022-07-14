@@ -12,7 +12,7 @@ images:
 - name: example
   newName: quay.io/operate-first/opf-toolbox:v0.5.0
 configMapGenerator:
-- name: robozome-configMap
+- name: robozome
   files:
   - onboarding.patch
 generatorOptions:
