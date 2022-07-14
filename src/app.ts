@@ -190,56 +190,33 @@ export default (
     });
   });
 
-  app.on("issues", async(context: any) => {
-    const issueComment = context.issue({
+  app.on("issues.opened", async(context: any) => {
+    var issueComment = context.issue({
            body: "Thanks for submitting onboarding request!",
          });
     
-    // try {
-    //     const data = await parse(context);
-    // } catch {
-    //     app.log.info('Issue was not created using Issue form template (the YAML ones)');
-    //     console.log("We in here but failed");
-    // }
-    
-    const data = { //test data until parse working
-      targetCluster: ["cluster"],
-      teamName: "name",
-      desiredProjectName: "namespace",
-      projectDescription: "description of project",
-      usersNeedingAccess: "users",
-      namespaceQuota: ["custom"],
-      customQuota: "custTest",
-      GPGKey: ""
-    };
-
-    var cluster:string;
-    if (data["targetCluster"][0] == "smaug" || data["targetCluster"][0] == "infra"){
-      cluster = "moc/" + data["targetCluster"];
-    } else{
-      cluster = "emea/" + data["targetCluster"];
-    };
-
-    var quota:string;
-    if (data["namespaceQuota"][0] == "custom"){
-      quota = data["customQuota"];
-    } else{
-      quota = data["namespaceQuota"][0];
+    var data;
+    try {
+      data = await parse(context);
+    } catch {
+      app.log.info('Issue was not created using Issue form template (the YAML ones)');
+      issueComment = context.issue({body: "Sorry, there was an error submitting your request."})
+      return context.octokit.issues.createComment(issueComment);
     }
 
-    const payloadDict = {
-      namespace: data["desiredProjectName"],
-      group: data["teamName"],
-      quota: quota,
-      cluster: cluster,
-      description: data["projectDescription"],
-      users: data["usersNeedingAccess"],
-      GPG: data["GPGKey"]
+    const body:string = context.payload.issue["body"];
+    if (body.includes("### Target cluster")){
+
+      if (data["quota"][0] == "custom"){
+        data["quota"] = data["custom-quota"];
+      };
+  
+      const payload = JSON.stringify(data);
+  
+      createTaskRun('robozome', payload);
+
+      return context.octokit.issues.createComment(issueComment);
     };
-
-    const payload = JSON.stringify(payloadDict);
-
-    createTaskRun('robozome', context)
 
   });
 };
