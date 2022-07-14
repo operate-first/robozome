@@ -2,10 +2,6 @@
 
 Contributors to the Peribolos Github app (sorted alphabetically):
 
-* [@KPostOffice](https://github.com/KPostOffice)
-* [@SamoKopecky](https://github.com/SamoKopecky)
-* [@Shreyanand](https://github.com/Shreyanand)
-* [@harshad16](https://github.com/harshad16)
-* [@mimotej](https://github.com/mimotej)
-* [@schwesig](https://github.com/schwesig)
+* [@larsks](https://github.com/larsks)
+* [@tssala23](https://github.com/tssala23)
 * [@tumido](https://github.com/tumido)

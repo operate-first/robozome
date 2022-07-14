@@ -27,22 +27,22 @@ jobs:
         uses: ./.github/actions/build
         with:
           tags: ${{ github.sha }} latest
-      #     image: IMAGE
-      #
-      # - name: Push To Quay
-      #   uses: redhat-actions/push-to-registry@v2
-      #   if: ${{ github.repository == 'ORG/REPO'}}
-      #   with:
-      #     image: IMAGE
-      #     tags: ${{ github.sha }} latest
-      #     registry: quay.io/QUAY_ORG
-      #     username: ${{ secrets.QUAY_USERNAME }}
-      #     password: ${{ secrets.QUAY_PASSWORD }}
+          image: robozome
 
-      # - name: Set expiration
-      #   uses: ./.github/actions/set-expiration
-      #   with:
-      #     repository: QUAY_ORG/QUAY_REPO
-      #     tag: ${{ github.sha }}
-      #     expiration: +1 week
-      #     token: ${{ secrets.QUAY_OAUTH_TOKEN }}
+      - name: Push To Quay
+        uses: redhat-actions/push-to-registry@v2
+        if: ${{ github.repository == 'operate-first/robozome'}}
+        with:
+          image: robozome
+          tags: ${{ github.sha }} latest
+          registry: quay.io/operate-first
+          username: ${{ secrets.QUAY_USERNAME }}
+          password: ${{ secrets.QUAY_PASSWORD }}
+
+      - name: Set expiration
+        uses: ./.github/actions/set-expiration
+        with:
+          repository: operate-first/robozome
+          tag: ${{ github.sha }}
+          expiration: +1 week
+          token: ${{ secrets.QUAY_OAUTH_TOKEN }}

@@ -1,8 +1,8 @@
 {
-  "name": "{{name}}",
+  "name": "robozome",
   "version": "1.0.0",
   "private": true,
-  "homepage": "https://github.com/{{org-repo}}",
+  "homepage": "https://github.com/operate-first/robozome",
   "scripts": {
     "build": "tsc",
     "start": "node lib/index.js",
@@ -21,7 +21,7 @@
     "@semantic-release/changelog": "6.0.1",
     "@semantic-release/exec": "6.0.3",
     "@semantic-release/git": "10.0.1",
-    "@semantic-release/github": "8.0.4",
+    "@semantic-release/github": "8.0.5",
     "@types/jest": "28.1.2",
     "@types/node": "16.11.41",
     "@typescript-eslint/eslint-plugin": "5.27.0",
