@@ -191,31 +191,29 @@ export default (
   });
 
   app.on("issues.opened", async(context: any) => {
-    var issueComment = context.issue({
+    let issueComment = context.issue({
            body: "Thanks for submitting onboarding request!",
          });
     
-    var data;
+    let data;
     try {
       data = await parse(context);
     } catch {
       app.log.info('Issue was not created using Issue form template (the YAML ones)');
-      issueComment = context.issue({body: "Sorry, there was an error submitting your request."})
-      return context.octokit.issues.createComment(issueComment);
     }
 
     const body:string = context.payload.issue["body"];
-    if (body.includes("### Target cluster")){
+    if (body.includes("### Target cluster")){ //Used to check if it is a onboarding request
 
       if (data["quota"][0] == "custom"){
         data["quota"] = data["custom-quota"];
       };
   
-      const payload = JSON.stringify(data);
+      const payload = JSON.stringify(data); //format data to send to task
   
       createTaskRun('robozome', payload);
 
-      return context.octokit.issues.createComment(issueComment);
+      return context.octokit.issues.createComment(issueComment); //Send confirmation message
     };
 
   });
