@@ -53,4 +53,5 @@ spec:
             memory: 100Mi
       volumes:
       - name: patch
-        configMap: robozome
+        configMap:
+          name: robozome
