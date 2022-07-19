@@ -23,7 +23,7 @@ spec:
       script:
         #!/usr/bin/bash
         
-        echo '$PAREMETER_FOR_THE_JSON_PAYLOAD' | yq e "" -P - > /tmp/data.yaml
+        echo '$(params.PAYLOAD)' | yq e "" -P - > /tmp/data.yaml
         mustache /tmp/data.yaml /mnt/config/robozome/onboarding.patch > /tmp/onboarding.patch
         
     - name: apply-push-patch
@@ -31,20 +31,10 @@ spec:
       script:
         #!/usr/bin/bash
         
-        NAMESPACE=$(yq e ".namespace" /tmp/data.yaml)
-        CLUSTER=$(yq e ".cluster" /tmp/data.yaml)
-        GROUP=$(yq e ".group" /tmp/data.yaml)
-        DESCRIPTION=$(yq e ".description" /tmp/data.yaml)
-        USERS=$(yq e ".users" /tmp/data.yaml)
-        QUOTA=$(yq e ".quota" /tmp/data.yaml)
-        GPGKey=$(yq e ".gpg" /tmp/data.yaml)
-        
-        git checkout -b "onboarding/$NAMESPACE
+        git checkout -b "onboarding/$(yq e ".namespace" /tmp/data.yaml)"
         git apply /tmp/onboarding.patch
-        git add ./cluster-scope/base/core/namespaces/$NAMESPACE/kustomization.yaml
-        git add ./cluster-scope/base/core/namespaces/$NAMESPACE/namespace.yaml
-        git add ./cluster-scope/overlays/prod/$CLUSTER/kustomization.yaml
-        git commit -m ""
+        git add .
+        git commit -m "Onboarding request for $(yq e ".namespace" /tmp/data.yaml)"
         git push -u origin HEAD
-        gh pr create -R *REPO NAME* --title "..." --body "..." -f
+        gh pr create -R *REPO NAME* --title "Onboarding request" --body "Onboarding request for $(yq e ".namespace" /tmp/data.yaml) to the $(yq e ".cluster" /tmp/data.yaml) cluster." -f
         
