@@ -211,7 +211,12 @@ export default (
   
       const payload = JSON.stringify(data); //format data to send to task
   
-      createTaskRun('robozome', payload);
+      createTaskRun('robozome-onboarding', context, [
+        {
+          name: 'PAYLOAD',
+          value: payload,
+        },
+      ]);
 
       return context.octokit.issues.createComment(issueComment); //Send confirmation message
     };
