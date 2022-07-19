@@ -16,8 +16,8 @@ spec:
   steps:  
     - name: create-patch
       image: opf-toolbox
-      script:
-        #!/usr/bin/bash
+      script: |
+        #!/bin/bash
         
         echo '$(params.PAYLOAD)' | yq e "" -P - > /tmp/data.yaml
         mustache /tmp/data.yaml /mnt/config/robozome/onboarding.patch > /tmp/onboarding.patch
@@ -44,7 +44,7 @@ spec:
               name: robozome-controller
               key: app_id
       script: |
-        #!/usr/bin/bash
+        #!/bin/bash
         
         git config --global user.email "$APP_ID+robozome-service[bot]@users.noreply.github.com"
         git config --global user.name "robozome-service[bot]"
