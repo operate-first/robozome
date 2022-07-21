@@ -2,12 +2,18 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-- example.yaml
+- onboarding.yaml
 configurations:
 - .transformers.yaml
 namePrefix: "{{name}}-"
 commonLabels:
   app.kubernetes.io/component: task
 images:
-- name: example
+- name: opf-toolbox
   newName: quay.io/operate-first/opf-toolbox:v0.5.0
+configMapGenerator:
+- name: robozome
+  files:
+  - onboarding.patch
+generatorOptions:
+  disableNameSuffixHash: true

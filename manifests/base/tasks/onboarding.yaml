@@ -1,0 +1,70 @@
+---
+apiVersion: tekton.dev/v1beta1
+kind: task
+metadata:
+  name: run
+spec:
+  params:
+    - name: REPO_NAME
+      type: string
+      default: .github
+    - name: SECRET_NAME
+      type: string
+    - name: PAYLOAD
+      type: string
+      default: ""
+  steps:  
+    - name: create-patch
+      image: opf-toolbox
+      script: |
+        #!/bin/bash
+        
+        echo '$(params.PAYLOAD)' >> /tmp/data.yaml
+        mustache /tmp/data.yaml /mnt/config/robozome/onboarding.patch > /tmp/onboarding.patch
+        
+    - name: apply-push-patch
+      image: opf-toolbox
+      volumeMounts:
+        - mountPath: /mnt/secret
+          name: private-key
+      env:
+        - name: GITHUB_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: $(param.SECRET_NAME)
+              key: token
+        - name: ORG_NAME
+          valueFrom:
+            secretKeyRef:
+              name: $(param.SECRET_NAME)
+              key: orgName
+        - name: APP_ID
+          valueFrom:
+            secretKeyRef:
+              name: robozome-controller
+              key: app_id
+      script: |
+        #!/bin/bash
+        
+        git config --global user.email "$APP_ID+robozome-service[bot]@users.noreply.github.com"
+        git config --global user.name "robozome-service[bot]"
+        
+        echo "Cloning repo"
+        git clone https://x-access-token:$GITHUB_TOKEN@github.com/$ORG_NAME/$(param.REPO_NAME)
+        cd $(param.REPO_NAME)
+        
+        git checkout -b "onboarding/$(yq e ".namespace" /tmp/data.yaml)"
+        git apply /tmp/onboarding.patch
+        git add .
+        git commit -m "Onboarding request for $(yq e ".namespace" /tmp/data.yaml)"
+        git push -u origin HEAD
+        gh pr create -R *REPO NAME* --title "Onboarding request" --body "Onboarding request for $(yq e ".namespace" /tmp/data.yaml) to the $(yq e ".cluster" /tmp/data.yaml) cluster." -f
+  
+  volumes:
+    - name: private-key
+      secret:
+        secretName: robozome-controller
+        items:
+          - key: private_key
+            path: private_key
+        optional: false
