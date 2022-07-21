@@ -10,7 +10,7 @@ import {
   updateTokenSecret,
   useApi,
 } from '@operate-first/probot-kubernetes';
-import { parse } from '@open-service-group/probot-issue-form';
+import parse from "@operate-first/probot-issue-form";
 
 const generateTaskPayload = (name: string, context: any) => ({
   apiVersion: 'tekton.dev/v1beta1',
