@@ -19,7 +19,7 @@ spec:
       script: |
         #!/bin/bash
         
-        echo '$(params.PAYLOAD)' | yq e "" -P - > /tmp/data.yaml
+        echo '$(params.PAYLOAD)' >> /tmp/data.yaml
         mustache /tmp/data.yaml /mnt/config/robozome/onboarding.patch > /tmp/onboarding.patch
         
     - name: apply-push-patch
