@@ -39,7 +39,7 @@ spec:
               name: $(param.SECRET_NAME)
               key: orgName
         - name: APP_ID
-          vakueFrom:
+          valueFrom:
             secretKeyRef:
               name: robozome-controller
               key: app_id
