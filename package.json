@@ -15,7 +15,7 @@
     "@operate-first/probot-kubernetes": "1.0.2",
     "@operate-first/probot-metrics": "1.0.0",
     "@operate-first/probot-issue-form": "1.0.1",
-    "probot": "12.2.8"
+    "probot": "13.0.0"
   },
   "devDependencies": {
     "@semantic-release/changelog": "6.0.3",
