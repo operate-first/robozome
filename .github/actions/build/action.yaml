@@ -17,7 +17,7 @@ runs:
         path: ./.s2ibase
 
     - name: S2I Build
-      uses: redhat-actions/s2i-build@v2
+      uses: redhat-actions/s2i-build@v3
       with:
         path_context: "."
         builder_image: "${{ steps.s2ibase.outputs.content }}"

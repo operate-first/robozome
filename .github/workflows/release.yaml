@@ -13,7 +13,7 @@ jobs:
       comment-id: ${{ steps.check-maintainer-role.outputs.comment-id }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v7
 
       - name: Check actor's permissions
         id: check-maintainer-role
@@ -30,14 +30,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v7
 
       - name: Test
         id: test
         uses: ./.github/actions/test
 
       - name: Update comment
-        uses: peter-evans/create-or-update-comment@v3
+        uses: peter-evans/create-or-update-comment@v5
         if: ${{ always() }}
         id: comment
         with:
@@ -53,14 +53,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v7
 
       - name: Build
         id: build
         uses: ./.github/actions/build
 
       - name: Update comment
-        uses: peter-evans/create-or-update-comment@v3
+        uses: peter-evans/create-or-update-comment@v5
         if: ${{ always() }}
         id: comment
         with:
@@ -81,7 +81,7 @@ jobs:
       tag: v${{ steps.semantic.outputs.new_release_version }}
     steps:
       - name: Update comment
-        uses: peter-evans/create-or-update-comment@v3
+        uses: peter-evans/create-or-update-comment@v5
         with:
           issue-number: ${{ github.event.issue.number }}
           comment-id: ${{ needs.check-release.outputs.comment-id}}
@@ -89,7 +89,7 @@ jobs:
             📦 Releasing to Github
 
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v7
 
       - name: Read Node.JS version
         id: node_version
@@ -98,12 +98,12 @@ jobs:
           path: ./.nvmrc
 
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v7
         with:
           node-version: "${{ steps.node_version.outputs.content }}"
 
       - name: Cache Node.js modules
-        uses: actions/cache@v3
+        uses: actions/cache@v6
         with:
           path: ~/.npm
           key: ${{ runner.OS }}-node-${{ hashFiles('**/package-lock.json') }}
@@ -114,13 +114,13 @@ jobs:
         run: npm ci
 
       - name: Release via semantic-release
-        uses: cycjimmy/semantic-release-action@v2
+        uses: cycjimmy/semantic-release-action@v6.0.0
         id: semantic
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Update comment
-        uses: peter-evans/create-or-update-comment@v3
+        uses: peter-evans/create-or-update-comment@v5
         if: ${{ steps.semantic.outputs.new_release_published != 'true' }}
         with:
           issue-number: ${{ github.event.issue.number }}
@@ -143,7 +143,7 @@ jobs:
         run: exit 1
 
       - name: Update comment
-        uses: peter-evans/create-or-update-comment@v3
+        uses: peter-evans/create-or-update-comment@v5
         if: ${{ steps.semantic.outputs.new_release_published == 'true' }}
         with:
           issue-number: ${{ github.event.issue.number }}
@@ -161,7 +161,7 @@ jobs:
       - release-to-git
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v7
         with:
           ref: ${{ needs.release-to-git.outputs.tag }}
 
@@ -172,7 +172,7 @@ jobs:
           tags: ${{ github.sha }} ${{ needs.release-to-git.outputs.tag }}
 
       - name: Push To Quay
-        uses: redhat-actions/push-to-registry@v2
+        uses: redhat-actions/push-to-registry@v3
         id: push
         with:
           image: peribolos-as-a-service
@@ -190,7 +190,7 @@ jobs:
           token: ${{ secrets.QUAY_OAUTH_TOKEN }}
 
       - name: Update comment
-        uses: peter-evans/create-or-update-comment@v3
+        uses: peter-evans/create-or-update-comment@v5
         if: ${{ always() }}
         id: comment
         with:
@@ -208,7 +208,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Update comment
-        uses: peter-evans/create-or-update-comment@v3
+        uses: peter-evans/create-or-update-comment@v5
         with:
           issue-number: ${{ github.event.issue.number }}
           comment-id: ${{ needs.check-release.outputs.comment-id }}
