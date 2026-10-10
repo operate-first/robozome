@@ -12,7 +12,7 @@ runs:
   steps:
     - name: Read S2I base image
       id: s2ibase
-      uses: juliangruber/read-file-action@v1
+      uses: juliangruber/read-file-action@v1.1.8
       with:
         path: ./.s2ibase
 
